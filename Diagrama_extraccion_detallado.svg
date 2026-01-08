@@ -1,0 +1,233 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="598pt" height="963pt" viewBox="0.00 0.00 598.00 963.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 959.2)">
+<title>DetailedExtraction</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-959.2 593.83,-959.2 593.83,4 -4,4"/>
+<text xml:space="preserve" text-anchor="middle" x="294.92" y="-935" font-family="Times,serif" font-size="18.00">Diagrama Detallado de Extracción de Datos (pipeline.py)</text>
+<g id="clust1" class="cluster">
+<title>cluster_pipeline</title>
+<path fill="#d9ead3" stroke="black" d="M20,-8C20,-8 312,-8 312,-8 318,-8 324,-14 324,-20 324,-20 324,-905.6 324,-905.6 324,-911.6 318,-917.6 312,-917.6 312,-917.6 20,-917.6 20,-917.6 14,-917.6 8,-911.6 8,-905.6 8,-905.6 8,-20 8,-20 8,-14 14,-8 20,-8"/>
+<text xml:space="preserve" text-anchor="middle" x="166" y="-897.4" font-family="Times,serif" font-size="18.00">pipeline.py</text>
+</g>
+<!-- p_main -->
+<g id="node1" class="node">
+<title>p_main</title>
+<path fill="lightgrey" stroke="black" d="M304.32,-880C304.32,-880 139.68,-880 139.68,-880 133.68,-880 127.68,-874 127.68,-868 127.68,-868 127.68,-856 127.68,-856 127.68,-850 133.68,-844 139.68,-844 139.68,-844 304.32,-844 304.32,-844 310.32,-844 316.32,-850 316.32,-856 316.32,-856 316.32,-868 316.32,-868 316.32,-874 310.32,-880 304.32,-880"/>
+<text xml:space="preserve" text-anchor="middle" x="222" y="-857.8" font-family="Helvetica,sans-Serif" font-size="14.00">Función principal 'pipeline()'</text>
+</g>
+<!-- p_extract_vehicles -->
+<g id="node2" class="node">
+<title>p_extract_vehicles</title>
+<path fill="lightgrey" stroke="black" d="M285.31,-797.2C285.31,-797.2 158.69,-797.2 158.69,-797.2 152.69,-797.2 146.69,-791.2 146.69,-785.2 146.69,-785.2 146.69,-773.2 146.69,-773.2 146.69,-767.2 152.69,-761.2 158.69,-761.2 158.69,-761.2 285.31,-761.2 285.31,-761.2 291.31,-761.2 297.31,-767.2 297.31,-773.2 297.31,-773.2 297.31,-785.2 297.31,-785.2 297.31,-791.2 291.31,-797.2 285.31,-797.2"/>
+<text xml:space="preserve" text-anchor="middle" x="222" y="-775" font-family="Helvetica,sans-Serif" font-size="14.00">1. extraer_vehiculos()</text>
+</g>
+<!-- p_main&#45;&gt;p_extract_vehicles -->
+<g id="edge3" class="edge">
+<title>p_main-&gt;p_extract_vehicles</title>
+<path fill="none" stroke="black" d="M222,-843.86C222,-833.76 222,-820.7 222,-809.05"/>
+<polygon fill="black" stroke="black" points="225.5,-809.1 222,-799.1 218.5,-809.1 225.5,-809.1"/>
+</g>
+<!-- config -->
+<g id="node12" class="node">
+<title>config</title>
+<polygon fill="#fff2cc" stroke="black" points="398.02,-797.2 331.98,-797.2 331.98,-761.2 404.02,-761.2 404.02,-791.2 398.02,-797.2"/>
+<polyline fill="none" stroke="black" points="398.02,-797.2 398.02,-791.2"/>
+<polyline fill="none" stroke="black" points="404.02,-791.2 398.02,-791.2"/>
+<text xml:space="preserve" text-anchor="middle" x="368" y="-775" font-family="Helvetica,sans-Serif" font-size="14.00">config.py</text>
+</g>
+<!-- p_main&#45;&gt;config -->
+<g id="edge2" class="edge">
+<title>p_main-&gt;config</title>
+<path fill="none" stroke="black" d="M253.32,-843.67C274.71,-831.83 303.27,-816.02 326.54,-803.15"/>
+<polygon fill="black" stroke="black" points="328.1,-806.28 335.16,-798.38 324.71,-800.16 328.1,-806.28"/>
+<text xml:space="preserve" text-anchor="middle" x="337.01" y="-817.9" font-family="Helvetica,sans-Serif" font-size="9.00">Obtiene headers</text>
+</g>
+<!-- rango -->
+<g id="node13" class="node">
+<title>rango</title>
+<polygon fill="#fff2cc" stroke="black" points="536.14,-797.2 421.86,-797.2 421.86,-761.2 542.14,-761.2 542.14,-791.2 536.14,-797.2"/>
+<polyline fill="none" stroke="black" points="536.14,-797.2 536.14,-791.2"/>
+<polyline fill="none" stroke="black" points="542.14,-791.2 536.14,-791.2"/>
+<text xml:space="preserve" text-anchor="middle" x="482" y="-775" font-family="Helvetica,sans-Serif" font-size="14.00">rango_tiempo.py</text>
+</g>
+<!-- p_main&#45;&gt;rango -->
+<g id="edge1" class="edge">
+<title>p_main-&gt;rango</title>
+<path fill="none" stroke="black" d="M309.93,-843.5C331.1,-838.54 353.52,-832.64 374,-826 394.5,-819.35 416.51,-810.37 435.27,-802.13"/>
+<polygon fill="black" stroke="black" points="436.53,-805.4 444.24,-798.13 433.68,-799 436.53,-805.4"/>
+<text xml:space="preserve" text-anchor="middle" x="431.51" y="-817.9" font-family="Helvetica,sans-Serif" font-size="9.00">Obtiene fechas</text>
+</g>
+<!-- p_transform_vehicles -->
+<g id="node3" class="node">
+<title>p_transform_vehicles</title>
+<path fill="lightgrey" stroke="black" d="M284.65,-714.4C284.65,-714.4 97.35,-714.4 97.35,-714.4 91.35,-714.4 85.35,-708.4 85.35,-702.4 85.35,-702.4 85.35,-690.4 85.35,-690.4 85.35,-684.4 91.35,-678.4 97.35,-678.4 97.35,-678.4 284.65,-678.4 284.65,-678.4 290.65,-678.4 296.65,-684.4 296.65,-690.4 296.65,-690.4 296.65,-702.4 296.65,-702.4 296.65,-708.4 290.65,-714.4 284.65,-714.4"/>
+<text xml:space="preserve" text-anchor="middle" x="191" y="-692.2" font-family="Helvetica,sans-Serif" font-size="14.00">1.1. transformacion_vehiculos()</text>
+</g>
+<!-- p_extract_vehicles&#45;&gt;p_transform_vehicles -->
+<g id="edge5" class="edge">
+<title>p_extract_vehicles-&gt;p_transform_vehicles</title>
+<path fill="none" stroke="black" d="M215.43,-761.06C211.47,-750.74 206.33,-737.35 201.79,-725.51"/>
+<polygon fill="black" stroke="black" points="205.06,-724.29 198.21,-716.2 198.53,-726.79 205.06,-724.29"/>
+<text xml:space="preserve" text-anchor="middle" x="250.63" y="-735.1" font-family="Helvetica,sans-Serif" font-size="9.00">Retorna df_vehiculos</text>
+</g>
+<!-- api_vehicles -->
+<g id="node14" class="node">
+<title>api_vehicles</title>
+<path fill="#d1d1d1" stroke="black" d="M465.74,-711.13C465.74,-712.93 435.83,-714.4 399,-714.4 362.17,-714.4 332.26,-712.93 332.26,-711.13 332.26,-711.13 332.26,-681.67 332.26,-681.67 332.26,-679.87 362.17,-678.4 399,-678.4 435.83,-678.4 465.74,-679.87 465.74,-681.67 465.74,-681.67 465.74,-711.13 465.74,-711.13"/>
+<path fill="none" stroke="black" d="M465.74,-711.13C465.74,-709.32 435.83,-707.85 399,-707.85 362.17,-707.85 332.26,-709.32 332.26,-711.13"/>
+<text xml:space="preserve" text-anchor="middle" x="399" y="-692.2" font-family="Helvetica,sans-Serif" font-size="14.00">GET /fleet/vehicles</text>
+</g>
+<!-- p_extract_vehicles&#45;&gt;api_vehicles -->
+<g id="edge4" class="edge">
+<title>p_extract_vehicles-&gt;api_vehicles</title>
+<path fill="none" stroke="black" d="M259.97,-760.87C286.57,-748.72 322.32,-732.4 350.91,-719.35"/>
+<polygon fill="black" stroke="black" points="352.07,-722.67 359.71,-715.33 349.16,-716.3 352.07,-722.67"/>
+<text xml:space="preserve" text-anchor="middle" x="345.61" y="-735.1" font-family="Helvetica,sans-Serif" font-size="9.00">Llama a API</text>
+</g>
+<!-- p_extract_score -->
+<g id="node4" class="node">
+<title>p_extract_score</title>
+<path fill="lightgrey" stroke="black" d="M253.82,-631.6C253.82,-631.6 92.18,-631.6 92.18,-631.6 86.18,-631.6 80.18,-625.6 80.18,-619.6 80.18,-619.6 80.18,-607.6 80.18,-607.6 80.18,-601.6 86.18,-595.6 92.18,-595.6 92.18,-595.6 253.82,-595.6 253.82,-595.6 259.82,-595.6 265.82,-601.6 265.82,-607.6 265.82,-607.6 265.82,-619.6 265.82,-619.6 265.82,-625.6 259.82,-631.6 253.82,-631.6"/>
+<text xml:space="preserve" text-anchor="middle" x="173" y="-609.4" font-family="Helvetica,sans-Serif" font-size="14.00">2. extraer_score_vehiculo()</text>
+</g>
+<!-- p_transform_vehicles&#45;&gt;p_extract_score -->
+<g id="edge6" class="edge">
+<title>p_transform_vehicles-&gt;p_extract_score</title>
+<path fill="none" stroke="black" d="M187.18,-678.26C184.91,-668.05 181.96,-654.83 179.34,-643.08"/>
+<polygon fill="black" stroke="black" points="182.79,-642.47 177.2,-633.47 175.96,-643.99 182.79,-642.47"/>
+<text xml:space="preserve" text-anchor="middle" x="254.37" y="-652.3" font-family="Helvetica,sans-Serif" font-size="9.00">Retorna df_vehiculos_transformado</text>
+</g>
+<!-- p_join_scores -->
+<g id="node5" class="node">
+<title>p_join_scores</title>
+<path fill="lightgrey" stroke="black" d="M304.41,-548.8C304.41,-548.8 27.59,-548.8 27.59,-548.8 21.59,-548.8 15.59,-542.8 15.59,-536.8 15.59,-536.8 15.59,-524.8 15.59,-524.8 15.59,-518.8 21.59,-512.8 27.59,-512.8 27.59,-512.8 304.41,-512.8 304.41,-512.8 310.41,-512.8 316.41,-518.8 316.41,-524.8 316.41,-524.8 316.41,-536.8 316.41,-536.8 316.41,-542.8 310.41,-548.8 304.41,-548.8"/>
+<text xml:space="preserve" text-anchor="middle" x="166" y="-526.6" font-family="Helvetica,sans-Serif" font-size="14.00">3. transformar_unir_vehiculos_puntuaciones()</text>
+</g>
+<!-- p_extract_score&#45;&gt;p_join_scores -->
+<g id="edge8" class="edge">
+<title>p_extract_score-&gt;p_join_scores</title>
+<path fill="none" stroke="black" d="M171.52,-595.46C170.64,-585.36 169.51,-572.3 168.5,-560.65"/>
+<polygon fill="black" stroke="black" points="171.99,-560.36 167.64,-550.7 165.01,-560.96 171.99,-560.36"/>
+<text xml:space="preserve" text-anchor="middle" x="206.69" y="-569.5" font-family="Helvetica,sans-Serif" font-size="9.00">Retorna df_scores</text>
+</g>
+<!-- api_safety_score -->
+<g id="node15" class="node">
+<title>api_safety_score</title>
+<path fill="#d1d1d1" stroke="black" d="M589.83,-545.53C589.83,-547.33 532.54,-548.8 462,-548.8 391.46,-548.8 334.17,-547.33 334.17,-545.53 334.17,-545.53 334.17,-516.07 334.17,-516.07 334.17,-514.27 391.46,-512.8 462,-512.8 532.54,-512.8 589.83,-514.27 589.83,-516.07 589.83,-516.07 589.83,-545.53 589.83,-545.53"/>
+<path fill="none" stroke="black" d="M589.83,-545.53C589.83,-543.72 532.54,-542.25 462,-542.25 391.46,-542.25 334.17,-543.72 334.17,-545.53"/>
+<text xml:space="preserve" text-anchor="middle" x="462" y="-526.6" font-family="Helvetica,sans-Serif" font-size="14.00">GET /v1/fleet/vehicles/{id}/safety/score</text>
+</g>
+<!-- p_extract_score&#45;&gt;api_safety_score -->
+<g id="edge7" class="edge">
+<title>p_extract_score-&gt;api_safety_score</title>
+<path fill="none" stroke="black" d="M235.35,-595.17C280.46,-582.56 341.55,-565.47 388.95,-552.22"/>
+<polygon fill="black" stroke="black" points="389.61,-555.67 398.3,-549.61 387.73,-548.93 389.61,-555.67"/>
+<text xml:space="preserve" text-anchor="middle" x="397.34" y="-569.5" font-family="Helvetica,sans-Serif" font-size="9.00">Llama a API por cada vehículo</text>
+</g>
+<!-- p_extract_events -->
+<g id="node6" class="node">
+<title>p_extract_events</title>
+<path fill="lightgrey" stroke="black" d="M271.28,-466C271.28,-466 84.72,-466 84.72,-466 78.72,-466 72.72,-460 72.72,-454 72.72,-454 72.72,-442 72.72,-442 72.72,-436 78.72,-430 84.72,-430 84.72,-430 271.28,-430 271.28,-430 277.28,-430 283.28,-436 283.28,-442 283.28,-442 283.28,-454 283.28,-454 283.28,-460 277.28,-466 271.28,-466"/>
+<text xml:space="preserve" text-anchor="middle" x="178" y="-443.8" font-family="Helvetica,sans-Serif" font-size="14.00">4. extraer_eventos_seguridad()</text>
+</g>
+<!-- p_join_scores&#45;&gt;p_extract_events -->
+<g id="edge9" class="edge">
+<title>p_join_scores-&gt;p_extract_events</title>
+<path fill="none" stroke="black" d="M168.54,-512.66C170.06,-502.45 172.03,-489.23 173.77,-477.48"/>
+<polygon fill="black" stroke="black" points="177.19,-478.29 175.2,-467.89 170.26,-477.26 177.19,-478.29"/>
+<text xml:space="preserve" text-anchor="middle" x="212.25" y="-486.7" font-family="Helvetica,sans-Serif" font-size="9.00">Retorna df_unido_1</text>
+</g>
+<!-- p_transform_events -->
+<g id="node7" class="node">
+<title>p_transform_events</title>
+<path fill="lightgrey" stroke="black" d="M291.12,-383.2C291.12,-383.2 64.88,-383.2 64.88,-383.2 58.88,-383.2 52.88,-377.2 52.88,-371.2 52.88,-371.2 52.88,-359.2 52.88,-359.2 52.88,-353.2 58.88,-347.2 64.88,-347.2 64.88,-347.2 291.12,-347.2 291.12,-347.2 297.12,-347.2 303.12,-353.2 303.12,-359.2 303.12,-359.2 303.12,-371.2 303.12,-371.2 303.12,-377.2 297.12,-383.2 291.12,-383.2"/>
+<text xml:space="preserve" text-anchor="middle" x="178" y="-361" font-family="Helvetica,sans-Serif" font-size="14.00">4.1. transformar_eventos_seguridad()</text>
+</g>
+<!-- p_extract_events&#45;&gt;p_transform_events -->
+<g id="edge11" class="edge">
+<title>p_extract_events-&gt;p_transform_events</title>
+<path fill="none" stroke="black" d="M178,-429.86C178,-419.76 178,-406.7 178,-395.05"/>
+<polygon fill="black" stroke="black" points="181.5,-395.1 178,-385.1 174.5,-395.1 181.5,-395.1"/>
+<text xml:space="preserve" text-anchor="middle" x="217.28" y="-403.9" font-family="Helvetica,sans-Serif" font-size="9.00">Retorna df_eventos</text>
+</g>
+<!-- api_safety_events -->
+<g id="node16" class="node">
+<title>api_safety_events</title>
+<path fill="#d1d1d1" stroke="black" d="M498.09,-379.93C498.09,-381.73 460.85,-383.2 415,-383.2 369.15,-383.2 331.91,-381.73 331.91,-379.93 331.91,-379.93 331.91,-350.47 331.91,-350.47 331.91,-348.67 369.15,-347.2 415,-347.2 460.85,-347.2 498.09,-348.67 498.09,-350.47 498.09,-350.47 498.09,-379.93 498.09,-379.93"/>
+<path fill="none" stroke="black" d="M498.09,-379.93C498.09,-378.12 460.85,-376.65 415,-376.65 369.15,-376.65 331.91,-378.12 331.91,-379.93"/>
+<text xml:space="preserve" text-anchor="middle" x="415" y="-361" font-family="Helvetica,sans-Serif" font-size="14.00">GET /fleet/safety-events</text>
+</g>
+<!-- p_extract_events&#45;&gt;api_safety_events -->
+<g id="edge10" class="edge">
+<title>p_extract_events-&gt;api_safety_events</title>
+<path fill="none" stroke="black" d="M229.13,-429.57C265.7,-417.1 315.09,-400.26 353.76,-387.08"/>
+<polygon fill="black" stroke="black" points="354.6,-390.49 362.93,-383.95 352.34,-383.87 354.6,-390.49"/>
+<text xml:space="preserve" text-anchor="middle" x="335.2" y="-403.9" font-family="Helvetica,sans-Serif" font-size="9.00">Llama a API</text>
+</g>
+<!-- p_join_events -->
+<g id="node8" class="node">
+<title>p_join_events</title>
+<path fill="lightgrey" stroke="black" d="M294.24,-300.4C294.24,-300.4 61.76,-300.4 61.76,-300.4 55.76,-300.4 49.76,-294.4 49.76,-288.4 49.76,-288.4 49.76,-276.4 49.76,-276.4 49.76,-270.4 55.76,-264.4 61.76,-264.4 61.76,-264.4 294.24,-264.4 294.24,-264.4 300.24,-264.4 306.24,-270.4 306.24,-276.4 306.24,-276.4 306.24,-288.4 306.24,-288.4 306.24,-294.4 300.24,-300.4 294.24,-300.4"/>
+<text xml:space="preserve" text-anchor="middle" x="178" y="-278.2" font-family="Helvetica,sans-Serif" font-size="14.00">5. unir_vehiculos_eventos_seguridad()</text>
+</g>
+<!-- p_transform_events&#45;&gt;p_join_events -->
+<g id="edge12" class="edge">
+<title>p_transform_events-&gt;p_join_events</title>
+<path fill="none" stroke="black" d="M178,-347.06C178,-336.96 178,-323.9 178,-312.25"/>
+<polygon fill="black" stroke="black" points="181.5,-312.3 178,-302.3 174.5,-312.3 181.5,-312.3"/>
+<text xml:space="preserve" text-anchor="middle" x="240.79" y="-321.1" font-family="Helvetica,sans-Serif" font-size="9.00">Retorna df_eventos_procesado</text>
+</g>
+<!-- p_extract_tags -->
+<g id="node9" class="node">
+<title>p_extract_tags</title>
+<path fill="lightgrey" stroke="black" d="M256.09,-217.6C256.09,-217.6 99.91,-217.6 99.91,-217.6 93.91,-217.6 87.91,-211.6 87.91,-205.6 87.91,-205.6 87.91,-193.6 87.91,-193.6 87.91,-187.6 93.91,-181.6 99.91,-181.6 99.91,-181.6 256.09,-181.6 256.09,-181.6 262.09,-181.6 268.09,-187.6 268.09,-193.6 268.09,-193.6 268.09,-205.6 268.09,-205.6 268.09,-211.6 262.09,-217.6 256.09,-217.6"/>
+<text xml:space="preserve" text-anchor="middle" x="178" y="-195.4" font-family="Helvetica,sans-Serif" font-size="14.00">6. extraer_tags_samsara()</text>
+</g>
+<!-- p_join_events&#45;&gt;p_extract_tags -->
+<g id="edge13" class="edge">
+<title>p_join_events-&gt;p_extract_tags</title>
+<path fill="none" stroke="black" d="M178,-264.26C178,-254.16 178,-241.1 178,-229.45"/>
+<polygon fill="black" stroke="black" points="181.5,-229.5 178,-219.5 174.5,-229.5 181.5,-229.5"/>
+<text xml:space="preserve" text-anchor="middle" x="217.53" y="-238.3" font-family="Helvetica,sans-Serif" font-size="9.00">Retorna df_unido_2</text>
+</g>
+<!-- p_join_tags -->
+<g id="node10" class="node">
+<title>p_join_tags</title>
+<path fill="lightgrey" stroke="black" d="M271.5,-134.8C271.5,-134.8 72.5,-134.8 72.5,-134.8 66.5,-134.8 60.5,-128.8 60.5,-122.8 60.5,-122.8 60.5,-110.8 60.5,-110.8 60.5,-104.8 66.5,-98.8 72.5,-98.8 72.5,-98.8 271.5,-98.8 271.5,-98.8 277.5,-98.8 283.5,-104.8 283.5,-110.8 283.5,-110.8 283.5,-122.8 283.5,-122.8 283.5,-128.8 277.5,-134.8 271.5,-134.8"/>
+<text xml:space="preserve" text-anchor="middle" x="172" y="-112.6" font-family="Helvetica,sans-Serif" font-size="14.00">6.1. unir_tag_metricas_vehiculo()</text>
+</g>
+<!-- p_extract_tags&#45;&gt;p_join_tags -->
+<g id="edge15" class="edge">
+<title>p_extract_tags-&gt;p_join_tags</title>
+<path fill="none" stroke="black" d="M176.73,-181.46C175.98,-171.36 175.01,-158.3 174.14,-146.65"/>
+<polygon fill="black" stroke="black" points="177.63,-146.41 173.4,-136.7 170.65,-146.93 177.63,-146.41"/>
+<text xml:space="preserve" text-anchor="middle" x="207.38" y="-155.5" font-family="Helvetica,sans-Serif" font-size="9.00">Retorna df_tags</text>
+</g>
+<!-- api_tags -->
+<g id="node17" class="node">
+<title>api_tags</title>
+<path fill="#d1d1d1" stroke="black" d="M411.51,-131.53C411.51,-133.33 393.8,-134.8 372,-134.8 350.2,-134.8 332.49,-133.33 332.49,-131.53 332.49,-131.53 332.49,-102.07 332.49,-102.07 332.49,-100.27 350.2,-98.8 372,-98.8 393.8,-98.8 411.51,-100.27 411.51,-102.07 411.51,-102.07 411.51,-131.53 411.51,-131.53"/>
+<path fill="none" stroke="black" d="M411.51,-131.53C411.51,-129.72 393.8,-128.25 372,-128.25 350.2,-128.25 332.49,-129.72 332.49,-131.53"/>
+<text xml:space="preserve" text-anchor="middle" x="372" y="-112.6" font-family="Helvetica,sans-Serif" font-size="14.00">GET /tags</text>
+</g>
+<!-- p_extract_tags&#45;&gt;api_tags -->
+<g id="edge14" class="edge">
+<title>p_extract_tags-&gt;api_tags</title>
+<path fill="none" stroke="black" d="M219.62,-181.27C249.93,-168.64 291.08,-151.5 322.98,-138.21"/>
+<polygon fill="black" stroke="black" points="324.14,-141.53 332.02,-134.45 321.44,-135.06 324.14,-141.53"/>
+<text xml:space="preserve" text-anchor="middle" x="311.13" y="-155.5" font-family="Helvetica,sans-Serif" font-size="9.00">Llama a API</text>
+</g>
+<!-- p_final_process -->
+<g id="node11" class="node">
+<title>p_final_process</title>
+<polygon fill="#c3e6cb" stroke="black" points="19.69,-28.44 168,-16 316.31,-28.44 316.18,-48.56 19.82,-48.56 19.69,-28.44"/>
+<text xml:space="preserve" text-anchor="middle" x="168" y="-29.8" font-family="Helvetica,sans-Serif" font-size="14.00">Retorna DataFrame Final</text>
+</g>
+<!-- p_join_tags&#45;&gt;p_final_process -->
+<g id="edge16" class="edge">
+<title>p_join_tags-&gt;p_final_process</title>
+<path fill="none" stroke="black" d="M171.15,-98.66C170.6,-87.43 169.86,-72.56 169.24,-60.01"/>
+<polygon fill="black" stroke="black" points="172.75,-60.22 168.76,-50.4 165.76,-60.56 172.75,-60.22"/>
+<text xml:space="preserve" text-anchor="middle" x="209.77" y="-72.7" font-family="Helvetica,sans-Serif" font-size="9.00">Retorna df_unido_3</text>
+</g>
+</g>
+</svg>
