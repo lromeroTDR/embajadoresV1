@@ -539,7 +539,29 @@ def validar_tipo_datos(df):
         if col in df.columns:
             df[col] = df[col].astype(str).replace(['nan', 'None'], 'N/A')
 
+    # Correccion de duplicados
+
+    if df['Vehiculo'].duplicated().any():
+        print("\n¡ADVERTENCIA! Se encontraron vehículos duplicados en los datos procesados.")
+        print("Filas duplicadas (incluyendo todas las ocurrencias):")
+        # Muestra todas las filas que tienen valores duplicados en la columna 'Vehiculo'
+        print(df[df['Vehiculo'].duplicated(keep=False)].sort_values('Vehiculo'))
+        
+        # Elimina los duplicados, conservando solo la primera aparición
+        df.drop_duplicates(subset=['Vehiculo'], keep='first', inplace=True)
+        print("\nSe eliminaron los duplicados, conservando la primera aparición de cada vehículo.")
+        print(f"DataFrame después de eliminar duplicados: {len(df)} filas.")
+
     return df
+
+def guardar_reporte(fecha, reporte):
+    if not reporte.empty:
+            nombre_archivo = f"Datos/Reporte_{fecha.replace(':', '-')}.csv"
+            # Guardar archivo temporalmente
+            reporte.to_csv(nombre_archivo, index=False)
+            print(f"Reporte Guardado Correctamente. Nombre: {nombre_archivo}")
+    else:
+            print("No Se guardo el archivo")
 
 def pipeline():
   print("\n Iniciando Fechas")
@@ -584,5 +606,8 @@ def pipeline():
   cambio_idioma(df=b)
   print("\n D.- Validacion de datos")
   d= validar_tipo_datos(df=b)
-
+  print("\n E.- Guardar Reporte")
+  guardar_reporte(fecha=end_time_rfc,reporte=d)
+  print("\n PIPELINE TERMINADO")
+  
   return d

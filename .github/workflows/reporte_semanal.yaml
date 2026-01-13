@@ -1,0 +1,29 @@
+name: Reporte Semanal Automático
+
+on:
+  schedule:
+    # Esto ejecuta el workflow todos los lunes a las 09:00 UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Esto permite ejecutarlo manualmente cuando quieras
+jobs:
+  enviar-reporte:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v4
+
+    - name: Configurar Entorno
+      # Cambia esto según tu lenguaje (setup-python, setup-node, etc.)
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Instalar dependencias
+      run: |
+        pip install -r requirements.txt
+
+    - name: Ejecutar script de reporte
+      run: |
+        python correos.py 
+      env:
