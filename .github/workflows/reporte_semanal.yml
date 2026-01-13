@@ -9,8 +9,10 @@ jobs:
   enviar-reporte:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout del código
+      - name: Checkout del codigo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configurar Entorno
         uses: actions/setup-python@v4
@@ -20,10 +22,9 @@ jobs:
       - name: Instalar dependencias
         run: |
           pip install -r requirements.txt
-          pip install dvc[s3]  # Para la conexión con DagsHub
+          pip install dvc[s3]
 
-      # --- AQUÍ ESTÁ LA CLAVE ---
-      - name: Crear carpeta de salida
+      - name: Crear carpeta Datos
         run: mkdir -p Datos
 
       - name: Ejecutar script de reporte
@@ -32,14 +33,26 @@ jobs:
         env:
           SAMSARA_TOKEN: ${{ secrets.SAMSARA_TOKEN }}
 
-      - name: Configurar y subir a DagsHub
+      - name: Configurar y Subir a DagsHub
         run: |
-          dvc remote add origin --force s3://dvc
+          # 1. Configurar el remoto usando la URL de tu imagen
+          dvc remote add origin s3://dvc --force
           dvc remote modify origin endpointurl https://dagshub.com/LuisEduardoRomeroOlmos/embajadoresV1.s3
-          dvc remote modify origin --local auth basic
-          dvc remote modify origin --local user ${{ secrets.DAGSHUB_USER }}
-          dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
+          
+          # 2. Agregar el archivo y subirlo usando variables de entorno de AWS
           dvc add Datos/
           dvc push -r origin
+        env:
+          # DagsHub acepta el Token como Access Key y Secret Key en protocolo S3
+          AWS_ACCESS_KEY_ID: ${{ secrets.DAGSHUB_TOKEN }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DAGSHUB_TOKEN }}
+
+      - name: Sincronizar puntero DVC en Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add Datos.dvc .gitignore
+          git commit -m "Update weekly report data [skip ci]" || echo "No hay cambios"
+          git push origin main
        
     
