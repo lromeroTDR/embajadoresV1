@@ -468,25 +468,20 @@ def ordenar_puntuaciones(df_maestro):
 
 
 def filtracion_columnas(df_maestro):
-  columnas = ['vehicleName',
-              'tagName',
-              "nameParent",
-              'staticDriver_name',
-              'safetyScore',
-              'totalDistanceDrivenKm',
-              'crash',
-              'drowsy',
-              'genericDistraction',
-               'followingDistance',
-              'forwardCollisionWarning',
-              'obstructedCamera',
-              'harshAccelCount',
-              'braking',
-              'harshTurn',
-              'mobileUsage',
-              'noSeatbelt',
-              'Total_General']
-  return df_maestro[columnas].copy()
+    # 1. Tu lista de columnas deseadas (se queda igual)
+    columnas = [
+        'vehicleName', 'tagName', "nameParent", 'staticDriver_name',
+        'safetyScore', 'totalDistanceDrivenKm', 'crash', 'drowsy',
+        'genericDistraction', 'followingDistance', 'forwardCollisionWarning',
+        'obstructedCamera', 'harshAccelCount', 'braking', 'harshTurn',
+        'mobileUsage', 'noSeatbelt',"speeding-intervals" , 'Total_General'
+    ]
+    
+    # 2. Reindex: busca las columnas. Si no existen, las crea y pone 0 (fill_value=0)
+    # Esto evita el KeyError y garantiza que el orden sea siempre el mismo
+    df_filtrado = df_maestro.reindex(columns=columnas, fill_value=0)
+    
+    return df_filtrado.copy()
 
 def cambio_idioma(df):
     # Diccionario de mapeo (Inglés: Español)
@@ -508,6 +503,7 @@ def cambio_idioma(df):
     'harshTurn': 'Giro Brusco',
     'mobileUsage': 'Uso Celular',
     'noSeatbelt': 'Sin Cinturon',
+    "speeding-intervals": "Excesos Velocidad",
     'Total_General': 'Total General',
   }
 # Aplicar el cambio al DataFrame
@@ -516,6 +512,34 @@ def cambio_idioma(df):
   # Verificar los nombres
     print(df.columns)
 
+def validar_tipo_datos(df):
+    """
+    Convierte los float64 a int para que SQL Server los acepte en columnas INT.
+    """
+    # 1. Columnas que SQL Server tiene como INT (y que en tu info salían como float64)
+    cols_a_entero = [
+        'Puntuacion Seguridad', 'Aceleracion Brusca', 'Frenado Brusco', 
+        'Choques', 'Somnolencia', 'Distancia Seguimiento', 
+        'Colision Frontal', 'Conduccion Distraida', 'Giro Brusco', 
+        'Uso Celular', 'Sin Cinturon', 'Obstruccion Camara',"Excesos Velocidad", 'Total General'
+    ]
+    
+    for col in cols_a_entero:
+        if col in df.columns:
+            # fillna(0) es obligatorio para poder convertir a int
+            df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
+
+    # 2. Kilómetros: Es float64, lo dejamos con decimales pero REDONDEADO a 3
+    if 'Total Km' in df.columns:
+        df['Total Km'] = pd.to_numeric(df['Total Km'], errors='coerce').fillna(0).round(3)
+
+    # 3. Limpieza de strings (para evitar errores con nulos en EC/nameParent)
+    cols_texto = ['Vehiculo', 'Proyecto', 'EC', 'Conductor']
+    for col in cols_texto:
+        if col in df.columns:
+            df[col] = df[col].astype(str).replace(['nan', 'None'], 'N/A')
+
+    return df
 
 def pipeline():
   print("\n Iniciando Fechas")
@@ -548,7 +572,7 @@ def pipeline():
   print("\n 6.- Extraer Tags")
   df_meta6= extraer_tags_samsara(headers=headers)
   print("==========================================================")
-  print("\n 6.1.- Extraer Tags")
+  print("\n 6.1.- transformar Tags")
   df_meta6= transformacion_tags(df_tags_final=df_meta6)
   df_meta7 = unir_tag_metricas_vehiculo(df_maestro=df_meta5, df_tags= df_meta6)
   print("==========================================================")
@@ -558,5 +582,7 @@ def pipeline():
   b= filtracion_columnas(df_maestro=a)
   print("\n C.- Cambiar el idioma")
   cambio_idioma(df=b)
+  print("\n D.- Validacion de datos")
+  d= validar_tipo_datos(df=b)
 
-  return b
+  return d

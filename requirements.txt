@@ -1,3 +1,5 @@
 requests==2.32.5
 openpyxl
 pandas
+python-dotenv
+pyodbc
