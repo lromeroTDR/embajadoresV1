@@ -13,7 +13,6 @@ def run():
     df_maestro = pipeline()
 
     # --- INICIO: Verificación y limpieza de duplicados para 'Vehiculo' ---
-    # Asumimos que 'Vehiculo' es la clave primaria y no debería tener duplicados.
     if df_maestro['Vehiculo'].duplicated().any():
         print("\n¡ADVERTENCIA! Se encontraron vehículos duplicados en los datos procesados.")
         print("Filas duplicadas (incluyendo todas las ocurrencias):")

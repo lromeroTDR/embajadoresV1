@@ -1,3 +1,8 @@
+# Ignorar carpetas de sistema y de Git
+.git
+.gitignore
+.dvc
+
 # Python bytecode 
 **/__pycache__/
 *.pyc
@@ -7,6 +12,3 @@ embajadores/
 
 # Variables de entorno
 .env
-
-#Datos
-**/Datos/
