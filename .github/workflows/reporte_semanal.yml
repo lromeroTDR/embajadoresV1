@@ -9,7 +9,7 @@ jobs:
   enviar-reporte:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout del codigo
+      - name: Checkout del código
         uses: actions/checkout@v4
 
       - name: Configurar Entorno
@@ -20,12 +20,26 @@ jobs:
       - name: Instalar dependencias
         run: |
           pip install -r requirements.txt
+          pip install dvc[s3]  # Para la conexión con DagsHub
+
+      # --- AQUÍ ESTÁ LA CLAVE ---
+      - name: Crear carpeta de salida
+        run: mkdir -p Datos
 
       - name: Ejecutar script de reporte
         run: |
           python correos.py
-          - name: Ejecutar script de reporte
         env:
           SAMSARA_TOKEN: ${{ secrets.SAMSARA_TOKEN }}
+
+      - name: Configurar y subir a DagsHub
+        run: |
+          dvc remote add origin --force s3://dvc
+          dvc remote modify origin endpointurl https://dagshub.com/LuisEduardoRomeroOlmos/embajadoresV1.s3
+          dvc remote modify origin --local auth basic
+          dvc remote modify origin --local user ${{ secrets.DAGSHUB_USER }}
+          dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
+          dvc add Datos/
+          dvc push -r origin
        
     
