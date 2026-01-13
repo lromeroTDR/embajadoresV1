@@ -26,4 +26,4 @@ jobs:
     - name: Ejecutar script de reporte
       run: |
         python correos.py 
-      env:
+    
