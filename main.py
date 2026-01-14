@@ -1,5 +1,5 @@
 import pandas as pd
-from mandar_email import procesar_y_notificar, obtener_reglas
+from mandar_info import procesar_y_notificar, obtener_reglas
 from pipeline import pipeline
 from db import gestionar_guardado
 from rango_tiempo import fecha_z

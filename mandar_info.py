@@ -92,10 +92,8 @@ def procesar_y_notificar(df_datos):
         df_filtrado = df_datos[df_datos['EC'] == ec_objetivo]
         
         if not df_filtrado.empty:
-            nombre_archivo = f"Datos/Reporte_{ec_objetivo}.csv"
-            # Guardar archivo temporalmente
-            df_filtrado.to_csv(nombre_archivo, index=False)
             
+            nombre_archivo = f"Datos/Reporte_{ec_objetivo}.csv"
             # Enviar correo
             enviar_reporte_por_correo(correo, nombre, nombre_archivo)
             

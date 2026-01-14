@@ -1,7 +1,7 @@
 import pandas as pd
-from mandar_email import procesar_y_notificar, obtener_reglas
+from mandar_info import procesar_y_notificar, obtener_reglas, obtener_reglas
 from pipeline import pipeline
-from mandar_email import obtener_reglas
+
 
 
 def run():
