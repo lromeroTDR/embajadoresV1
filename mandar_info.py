@@ -88,12 +88,12 @@ def procesar_y_notificar(df_datos):
         nombre = fila['Nombre']
         ec_objetivo = fila['EC']
         correo = fila['Correo']
-        km = float(str(fila["km"]).replace(',', '.'))
-        score = float(str(fila["score"]).replace(',', '.'))
+        km = float(fila["km"])
+        score = float(fila["score"])
         
         # Filtrar datos (usamos coincidencia exacta para evitar mezclar EC-01 con EC-010)
         df_filtrado = df_datos[df_datos['EC'] == ec_objetivo]
-        df_filtrado1 = df_filtrado[df_filtrado["Total Km"]<km]
+        df_filtrado1 = df_filtrado[df_filtrado["Total Km"]>km]
         df_filtrado2 = df_filtrado1[df_filtrado1["Puntuacion Seguridad"]< score]
  
         if not df_filtrado2.empty:

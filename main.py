@@ -18,7 +18,7 @@ def run():
     db_friendly_date = dt_object.strftime('%Y-%m-%d %H:%M:%S')
     gestionar_guardado(df_maestro, db_friendly_date)
     print("********----...PROCESO 3: Procesar y Notificar....-----****************")
-    embajadores= obtener_reglas()
+
     procesar_y_notificar(df_maestro)
 
 

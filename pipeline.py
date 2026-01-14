@@ -552,6 +552,9 @@ def validar_tipo_datos(df):
         print("\nSe eliminaron los duplicados, conservando la primera aparición de cada vehículo.")
         print(f"DataFrame después de eliminar duplicados: {len(df)} filas.")
 
+
+    print("\n", df.info())
+
     return df
 
 def guardar_reporte(fecha, reporte):
