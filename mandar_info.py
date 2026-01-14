@@ -1,6 +1,7 @@
 import pandas as pd
 import smtplib
 import requests
+import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -10,7 +11,7 @@ from datetime import datetime
 
 def enviar_reporte_por_correo(destinatario, nombre, archivo_adjunto):
     remitente = "eduardo.romero.sinapsis@gmail.com"
-    password = "lvatglrsjpxyqqjo" # Tu contraseña de aplicación
+    password = "lvatglrsjpxyqqjo" 
 
     msg = MIMEMultipart()
     msg['From'] = remitente
@@ -21,7 +22,7 @@ def enviar_reporte_por_correo(destinatario, nombre, archivo_adjunto):
     cuerpo = f"""
     Hola {nombre},
     
-    Adjunto encontrarás el análisis inteligente de seguridad del Equipo Colaborativo ({archivo_adjunto.replace('Reporte_', '').replace('.csv', '')}) de la última semana.
+    Adjunto encontrarás la tabla de Habitos de Manejo  del Equipo Colaborativo ({archivo_adjunto.replace('Reporte_', '').replace('.csv', '')}) de la última semana.
     
     Saludos cordiales.
     """
@@ -87,18 +88,26 @@ def procesar_y_notificar(df_datos):
         nombre = fila['Nombre']
         ec_objetivo = fila['EC']
         correo = fila['Correo']
+        km = float(str(fila["km"]).replace(',', '.'))
+        score = float(str(fila["score"]).replace(',', '.'))
         
         # Filtrar datos (usamos coincidencia exacta para evitar mezclar EC-01 con EC-010)
         df_filtrado = df_datos[df_datos['EC'] == ec_objetivo]
-        
-        if not df_filtrado.empty:
+        df_filtrado1 = df_filtrado[df_filtrado["Total Km"]<km]
+        df_filtrado2 = df_filtrado1[df_filtrado1["Puntuacion Seguridad"]< score]
+ 
+        if not df_filtrado2.empty:
             
             nombre_archivo = f"Datos/Reporte_{ec_objetivo}.csv"
+            # Guardar archivo temporalmente
+            df_filtrado2.to_csv(nombre_archivo, index=False)
             # Enviar correo
             enviar_reporte_por_correo(correo, nombre, nombre_archivo)
+            if os.path.exists(nombre_archivo):
+                os.remove(nombre_archivo)
+                print(f"Archivo temporal {nombre_archivo} eliminado.")
             
-            # Opcional: eliminar el archivo después de enviar para no llenar el Drive
-            # import os; os.remove(nombre_archivo)
+          
         else:
             print(f"No se encontraron datos para {nombre} (EC: {ec_objetivo})")
 
