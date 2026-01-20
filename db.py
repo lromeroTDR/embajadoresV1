@@ -29,7 +29,7 @@ def save_to_database(df: pd.DataFrame, tbl: str, fecha_corte: str) -> int:
         # 1. Definición de INSERT con nombres de columna fijos (ahora ambas tablas son iguales)
         sql = f"""
         INSERT INTO {tbl} (
-            [Vehiculo], [Proyecto], [EC], [Conductor], [Puntuacion_Seguridad], 
+            [Operador], [Proyecto], [EC], [Vehiculo], [Score], 
             [Total_Km], [Choques], [Somnolencia], [Conduccion_Distraida], 
             [Distancia_Seguimiento], [Colision_Frontal], [Obstruccion_Camara], 
             [Aceleracion_Brusca], [Frenado_Brusco], [Giro_Brusco], 
@@ -43,11 +43,11 @@ def save_to_database(df: pd.DataFrame, tbl: str, fecha_corte: str) -> int:
         
         payload = [
             (
-                r['Vehiculo'], 
+                r['Operador'], 
                 r['Proyecto'], 
                 r['EC'], 
-                r['Conductor'], 
-                r['Puntuacion Seguridad'],
+                r['Vehiculo'], 
+                r['Score'],
                 r['Total Km'], 
                 r['Choques'], 
                 r['Somnolencia'], 

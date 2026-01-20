@@ -46,6 +46,15 @@ def enviar_reporte_por_correo(destinatario, nombre, archivo_adjunto):
     except Exception as e:
         print(f"Error al enviar a {nombre}: {e}")
 
+def aplicar_colores(valor):
+    if valor > 70:
+        color = 'background-color: #2ecc71; color: white'  # Verde
+    elif 40 <= valor <= 70:
+        color = 'background-color: #f1c40f; color: black'  # Amarillo
+    else:
+        color = 'background-color: #e74c3c; color: white'  # Rojo
+    return color
+
 def obtener_reglas():
     # 1. Configuración del endpoint
     url = "https://sheetdb.io/api/v1/5qzixp2wzdz9u"
@@ -94,13 +103,20 @@ def procesar_y_notificar(df_datos):
         # Filtrar datos (usamos coincidencia exacta para evitar mezclar EC-01 con EC-010)
         df_filtrado = df_datos[df_datos['EC'] == ec_objetivo]
         df_filtrado1 = df_filtrado[df_filtrado["Total Km"]>km]
-        df_filtrado2 = df_filtrado1[df_filtrado1["Puntuacion Seguridad"]< score]
+        df_filtrado2 = df_filtrado1[df_filtrado1["Score"]< score]
  
         if not df_filtrado2.empty:
-            
-            nombre_archivo = f"Datos/Reporte_{ec_objetivo}.csv"
-            # Guardar archivo temporalmente
-            df_filtrado2.to_csv(nombre_archivo, index=False)
+
+            # 1. Definir el nombre con extensión .xlsx
+            nombre_archivo = f"Datos/Reporte_{ec_objetivo}.xlsx"
+            # 2. Aplicar los colores antes de guardar
+            # Por esto (usando .map en lugar de .applymap):
+            df_filtrado2 = df_filtrado2.style.map(aplicar_colores, subset=['Score'])
+
+            # 3. Guardar como Excel usando el motor openpyxl
+            # Usamos el objeto con estilo en lugar del dataframe plano
+            df_filtrado2.to_excel(nombre_archivo, index=False, engine='openpyxl')
+
             # Enviar correo
             enviar_reporte_por_correo(correo, nombre, nombre_archivo)
             if os.path.exists(nombre_archivo):

@@ -1,9 +1,10 @@
-import pandas as pd
+import time
 from mandar_info import procesar_y_notificar, obtener_reglas
 from pipeline import pipeline
 from db import gestionar_guardado
 from rango_tiempo import fecha_z
 from datetime import datetime
+
 
 
 
@@ -18,7 +19,6 @@ def run():
     db_friendly_date = dt_object.strftime('%Y-%m-%d %H:%M:%S')
     gestionar_guardado(df_maestro, db_friendly_date)
     print("********----...PROCESO 3: Procesar y Notificar....-----****************")
-
     procesar_y_notificar(df_maestro)
 
 
@@ -27,4 +27,8 @@ if __name__ == "__main__":
     Este bloque es para probar el script en un entorno de desarrollo local,
     sin necesidad de subirlo a AWS.
     """
+    inicio = time.time()
     run()
+    fin = time.time()
+
+    print(f"La función tardó: {(fin - inicio)/60} minutos")

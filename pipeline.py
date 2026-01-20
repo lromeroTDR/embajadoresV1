@@ -8,24 +8,26 @@ from rango_tiempo import fecha_milisegundos, fecha_z
 
 # EXTRACCION DE VEHICULOS
 
-def extraer_vehiculos(headers, url_vehiculos):
+# EXTRACCION DE VEHICULOS
+
+def extraer_operadores(headers, url_operadores):
     """
-    Obtiene y limpia la lista de vehículos desde la API de Samsara manejando paginación.
+    Obtiene y limpia la lista de operadores desde la API de Samsara manejando paginación.
     """
-    todos_los_vehiculos = []
+    todos_los_operadores = []
     params = {} # Diccionario para manejar el cursor de la página
 
     try:
         while True:
             # Realizamos la petición incluyendo los params (donde irá el cursor)
-            response = requests.get(url_vehiculos, headers=headers, params=params)
+            response = requests.get(url_operadores, headers=headers, params=params)
             response.raise_for_status()
 
             data = response.json()
-            vehiculos_list = data.get('data', [])
+            operadores_list = data.get('data', [])
 
-            if vehiculos_list:
-                todos_los_vehiculos.extend(vehiculos_list)
+            if operadores_list:
+                todos_los_operadores.extend(operadores_list)
 
             # --- LÓGICA DE PAGINACIÓN ---
             pagination = data.get('pagination', {})
@@ -40,32 +42,34 @@ def extraer_vehiculos(headers, url_vehiculos):
                 break
 
         # --- PROCESAMIENTO CON PANDAS (Fuera del bucle) ---
-        if todos_los_vehiculos:
-            df_vehicles = pd.DataFrame(todos_los_vehiculos)
+        if todos_los_operadores:
+            df_drivers = pd.DataFrame(todos_los_operadores)
 
             # Limpieza y Renombrado
-            df_vehicles = df_vehicles.rename(columns={'id': 'vehicleId', 'name': 'vehicleName'})
+            df_drivers = df_drivers.rename(columns={'id': 'driverId', 'name': 'driverName'})
+            df_drivers= df_drivers[df_drivers['driverActivationStatus']=="active"]
 
-            print(f" Éxito: Se obtuvieron {len(df_vehicles)} registros totales de vehículos (incluyendo todas las páginas).")
-            return df_vehicles
+
+            print(f" Éxito: Se obtuvieron {len(df_drivers)} registros totales de operadores (incluyendo todas las páginas).")
+            return df_drivers
         else:
-            print("Advertencia: Lista de vehículos vacía.")
+            print("Advertencia: Lista de operadores esta vacía.")
             return pd.DataFrame()
 
     except requests.exceptions.HTTPError as e:
-        print(f" ERROR al obtener vehículos: {e}")
+        print(f" ERROR al obtener Operadores: {e}")
         return pd.DataFrame()
-    
 
-def transformacion_vehiculos(df_vehiculos):
+
+def transformacion_operadores(df_operadores):
     """
-    Normaliza las columnas 'tags' y 'staticAssignedDriver' incluyendo el parentTagId.
+    Normaliza las columnas 'tags' y 'staticAssignedVehicle' incluyendo el parentTagId.
     """
     # 1. Aseguramos que trabajamos con una copia de las columnas necesarias
-    df = df_vehiculos[['vehicleId', 'vehicleName', 'tags', 'staticAssignedDriver']].copy()
+    df = df_operadores[['driverId', 'driverName', 'tags', 'staticAssignedVehicle']].copy()
 
-    # 2. Normalizar 'staticAssignedDriver' (Diccionario simple)
-    df_static_driver = pd.json_normalize(df['staticAssignedDriver']).add_prefix('staticDriver_')
+    # 2. Normalizar 'staticAssignedVehicle' (Diccionario simple)
+    df_static_driver = pd.json_normalize(df["staticAssignedVehicle"]).add_prefix('staticVehicle_')
 
     # 3. Normalizar 'tags' (Extrayendo id, name y parentTagId del primer elemento)
     df['tagId'] = df['tags'].apply(lambda x: x[0].get('id') if isinstance(x, list) and len(x) > 0 else None)
@@ -75,12 +79,12 @@ def transformacion_vehiculos(df_vehiculos):
 
     # 4. Unir todo y limpiar
     df_final = pd.concat([
-        df.drop(columns=['tags', 'staticAssignedDriver']).reset_index(drop=True),
+        df.drop(columns=['tags', 'staticAssignedVehicle']).reset_index(drop=True),
         df_static_driver.reset_index(drop=True)
     ], axis=1)
 
     # 5. Asegurar tipos de datos para futuros merges y limpieza de 'nan' strings
-    columnas_id = ['vehicleId', 'staticDriver_id', 'tagId', 'parentTagId']
+    columnas_id = ['driverId', 'staticVehicle_id', 'tagId', 'parentTagId']
     for col in columnas_id:
         if col in df_final.columns:
             df_final[col] = df_final[col].astype(str).replace(['nan', 'None'], None)
@@ -89,33 +93,32 @@ def transformacion_vehiculos(df_vehiculos):
 
     return df_final
 
-# EXTRAER SCORE POR VEHICULO
+# EXTRAER SCORE POR OPERADOR
 
-def extraer_score_vehiculo(headers, df_vehiculos, params_score):
+def extraer_score_operador(headers, df_drivers, params_score):
     # 1. Obtener lista completa de vehículos
 
-    if df_vehiculos.empty:
-        print("No se encontraron vehículos.")
+    if df_drivers.empty:
+        print("No se encontraron operadores.")
         return None
 
     lista_puntuaciones = []
 
-    # 2. Iterar sobre cada vehículo obtenido
-    print(f"Procesando {len(df_vehiculos)} vehículos...")
+    # 2. Iterar sobre cada operador obtenido
+    print(f"Procesando {len(df_drivers)} Operadores...")
 
-    for index, row in df_vehiculos.iterrows():
-        v_id = row['vehicleId']
-        v_name = row['vehicleName']
+    for index, row in df_drivers.iterrows():
+        v_id = row['driverId']
+        v_name = row['driverName']
 
         # Reutilizamos tu lógica de petición
-        url_score = f"https://api.samsara.com/v1/fleet/vehicles/{v_id}/safety/score"
+        url_score = f"https://api.samsara.com/v1/fleet/drivers/{v_id}/safety/score"
 
         try:
             res = requests.get(url_score, headers=headers, params=params_score)
             if res.status_code == 200:
                 data_score = res.json()
-                # Añadimos el nombre para que el reporte sea legible
-                data_score['vehicleName'] = v_name
+                data_score['driverName'] = v_name
                 lista_puntuaciones.append(data_score)
             else:
                 print(f" Error en ID {v_id}: Código {res.status_code}")
@@ -125,23 +128,22 @@ def extraer_score_vehiculo(headers, df_vehiculos, params_score):
     # 3. Convertir resultados a DataFrame
     return pd.DataFrame(lista_puntuaciones)
 
-
 # 3. UNIR LOS DATAFRAMES Y MOSTRAR RESULTADOS
 
-def transformar_unir_vehiculos_puntuaciones(df_scores, df_vehiculos):
+def transformar_unir_operadores_puntuaciones(df_scores, df_drivers):
 
   print("\n Uniendo los resultados...")
 
-  if not df_scores.empty and not df_vehiculos.empty:
+  if not df_scores.empty and not df_drivers.empty:
       # Realizar el LEFT JOIN usando 'driverId'
-      df_vehiculos['vehicleId'] = df_vehiculos['vehicleId'].astype(str)
-      df_scores['vehicleId'] = df_scores['vehicleId'].astype(str)
-      if 'vehicleName' in df_scores.columns:
-         df_scores = df_scores.drop(columns=['vehicleName'])
+      df_drivers['driverId'] = df_drivers['driverId'].astype(str)
+      df_scores['driverId'] = df_scores['driverId'].astype(str)
+      if 'driverName' in df_scores.columns:
+         df_scores = df_scores.drop(columns=['driverName'])
       df_final = pd.merge(
-          df_vehiculos,
+          df_drivers,
           df_scores,
-          on='vehicleId',
+          on='driverId',
           how='left'
       )
 
@@ -150,8 +152,8 @@ def transformar_unir_vehiculos_puntuaciones(df_scores, df_vehiculos):
 
       # Seleccionar y mostrar las columnas clave
       df_final_view1 = df_final[[
-          "vehicleId",
-          "vehicleName",
+          "driverId",
+          "driverName",
           'safetyScore',
           #'totalHarshEventCount',
           #"harshEvents",
@@ -163,8 +165,8 @@ def transformar_unir_vehiculos_puntuaciones(df_scores, df_vehiculos):
           'tagId',
           'tagName',
           'parentTagId',
-          'staticDriver_id',
-          'staticDriver_name'
+          'staticVehicle_id',
+          'staticVehicle_name'
       ]]
 
       print("RESULTADO FINAL: Puntuaciones de Conductores Unificadas")
@@ -173,7 +175,6 @@ def transformar_unir_vehiculos_puntuaciones(df_scores, df_vehiculos):
 
   else:
       print("No se pudo realizar la unión. Uno o ambos DataFrames están vacíos.")
-
 
 # LISTA DE TODOS LOS EVENTOS DE SEGURIDAD
 
@@ -228,8 +229,8 @@ def extraer_eventos_seguridad(start_time_rfc, end_time_rfc, headers, url):
       print("\n No se encontraron eventos en el período seleccionado.")
 
 def transformar_eventos_seguridad(df_final_view2):
-    # 1. Seleccionamos las columnas necesarias incluyendo vehicle
-    df_temp = df_final_view2[[ 'behaviorLabels', 'vehicle']].copy()
+    # 1. Seleccionamos las columnas necesarias incluyendo driver
+    df_temp = df_final_view2[[ 'behaviorLabels', 'driver']].copy()
 
     # 2. "Explotamos" la columna behaviorLabels
     df_explotado = df_temp.explode('behaviorLabels')
@@ -242,12 +243,12 @@ def transformar_eventos_seguridad(df_final_view2):
 
     # 4. Desanidamos 'vehicle'
     # Usamos record_prefix para que sea vehicle_id, vehicle_name, etc.
-    df_vehicle = pd.json_normalize(df_explotado['vehicle']).add_prefix('vehicle_')
+    df_vehicle = pd.json_normalize(df_explotado['driver']).add_prefix('driver_')
 
     # 5. Unimos todo en un solo DataFrame limpio
     # Concatenamos eliminando las  columnas originales anidadas
     df_final = pd.concat([
-        df_explotado.drop(columns=['behaviorLabels', 'vehicle']).reset_index(drop=True),
+        df_explotado.drop(columns=['behaviorLabels', 'driver']).reset_index(drop=True),
         df_vehicle.reset_index(drop=True),
         df_labels.reset_index(drop=True)
     ], axis=1)
@@ -255,7 +256,7 @@ def transformar_eventos_seguridad(df_final_view2):
     # 6. Creamos la tabla dinámica
     # Ahora puedes incluir 'vehicle_name' en el index si quieres ver qué vehículo traían
     resumen_operadores = df_final.pivot_table(
-        index=['vehicle_id', 'vehicle_name'],
+        index=['driver_id', 'driver_name'],
         columns='behavior_label', # Nota: Samsara suele usar 'label' en behaviorLabels, no 'name'
         aggfunc='size',
         fill_value=0
@@ -266,8 +267,7 @@ def transformar_eventos_seguridad(df_final_view2):
     resumen_operadores = resumen_operadores.sort_values(by='Total_General', ascending=False)
 
     return resumen_operadores
-
-def unir_vehiculos_eventos_seguridad(df_final_view1, resumen_operadores):
+def unir_operadores_eventos_seguridad(df_final_view1, resumen_operadores):
   # 1. Asegúrate de que el resumen de comportamientos no tenga los ID en el índice
   # (si usaste pivot_table, ejecuta esto primero)
   resumen_comportamientos = resumen_operadores.reset_index()
@@ -276,14 +276,14 @@ def unir_vehiculos_eventos_seguridad(df_final_view1, resumen_operadores):
   df_maestro = pd.merge(
       df_final_view1,
       resumen_comportamientos,
-      left_on='vehicleId',
-      right_on='vehicle_id',
+      left_on='driverId',
+      right_on='driver_id',
       how='left'
   )
 
   # 3. Limpieza: Eliminamos la columna repetida de ID y llenamos los NaNs con 0
   # (los conductores sin infracciones específicas aparecerán con 0 en lugar de NaN)
-  df_maestro = df_maestro.drop(columns=['vehicle_id', 'vehicle_name'])
+  df_maestro = df_maestro.drop(columns=['driver_id', 'driver_name'])
   df_maestro = df_maestro.fillna(0)
 
   print(df_maestro.head())
@@ -368,7 +368,7 @@ def extraer_intervalos_velocidad(headers, start_time_rfc, end_time_rfc, df_vehic
     else:
         print("No se encontraron registros de exceso de velocidad en ningún vehículo.")
         return pd.DataFrame()
-    
+
 # EXTRAER TAGS SAMSARA
 
 def extraer_tags_samsara(headers):
@@ -422,7 +422,7 @@ def transformacion_tags(df_tags_final):
 
     return df_tags_final
 
-def unir_tag_metricas_vehiculo(df_maestro, df_tags):
+def unir_tag_metricas_operadores(df_maestro, df_tags):
     """
     Une el nombre del tag padre al DataFrame maestro usando el ID del padre.
     """
@@ -470,27 +470,27 @@ def ordenar_puntuaciones(df_maestro):
 def filtracion_columnas(df_maestro):
     # 1. Tu lista de columnas deseadas (se queda igual)
     columnas = [
-        'vehicleName', 'tagName', "nameParent", 'staticDriver_name',
+        'driverName', 'tagName', "nameParent", 'staticVehicle_name',
         'safetyScore', 'totalDistanceDrivenKm', 'crash', 'drowsy',
         'genericDistraction', 'followingDistance', 'forwardCollisionWarning',
         'obstructedCamera', 'harshAccelCount', 'braking', 'harshTurn',
         'mobileUsage', 'noSeatbelt',"speeding-intervals" , 'Total_General'
     ]
-    
+
     # 2. Reindex: busca las columnas. Si no existen, las crea y pone 0 (fill_value=0)
     # Esto evita el KeyError y garantiza que el orden sea siempre el mismo
     df_filtrado = df_maestro.reindex(columns=columnas, fill_value=0)
-    
+
     return df_filtrado.copy()
 
 def cambio_idioma(df):
     # Diccionario de mapeo (Inglés: Español)
     columnas_espanol = {
-    "vehicleName": "Vehiculo",
+    "driverName": "Operador",
     'tagName': "Proyecto",
     'nameParent': "EC",
-    'staticDriver_name': 'Conductor',
-    'safetyScore': 'Puntuacion Seguridad',
+    'staticVehicle_name': 'Vehiculo',
+    'safetyScore': 'Score',
     'totalDistanceDrivenKm': 'Total Km',
     'crash': 'Choques',
     'drowsy': 'Somnolencia',
@@ -518,12 +518,12 @@ def validar_tipo_datos(df):
     """
     # 1. Columnas que SQL Server tiene como INT (y que en tu info salían como float64)
     cols_a_entero = [
-        'Puntuacion Seguridad', 'Aceleracion Brusca', 'Frenado Brusco', 
-        'Choques', 'Somnolencia', 'Distancia Seguimiento', 
-        'Colision Frontal', 'Conduccion Distraida', 'Giro Brusco', 
+        'Score', 'Aceleracion Brusca', 'Frenado Brusco',
+        'Choques', 'Somnolencia', 'Distancia Seguimiento',
+        'Colision Frontal', 'Conduccion Distraida', 'Giro Brusco',
         'Uso Celular', 'Sin Cinturon', 'Obstruccion Camara',"Excesos Velocidad", 'Total General'
     ]
-    
+
     for col in cols_a_entero:
         if col in df.columns:
             # fillna(0) es obligatorio para poder convertir a int
@@ -534,21 +534,21 @@ def validar_tipo_datos(df):
         df['Total Km'] = pd.to_numeric(df['Total Km'], errors='coerce').fillna(0).round(3)
 
     # 3. Limpieza de strings (para evitar errores con nulos en EC/nameParent)
-    cols_texto = ['Vehiculo', 'Proyecto', 'EC', 'Conductor']
+    cols_texto = ['Operador', 'Proyecto', 'EC', 'Vehiculo']
     for col in cols_texto:
         if col in df.columns:
             df[col] = df[col].astype(str).replace(['nan', 'None'], 'N/A')
 
     # Correccion de duplicados
 
-    if df['Vehiculo'].duplicated().any():
+    if df['Operador'].duplicated().any():
         print("\n¡ADVERTENCIA! Se encontraron vehículos duplicados en los datos procesados.")
         print("Filas duplicadas (incluyendo todas las ocurrencias):")
         # Muestra todas las filas que tienen valores duplicados en la columna 'Vehiculo'
-        print(df[df['Vehiculo'].duplicated(keep=False)].sort_values('Vehiculo'))
-        
+        print(df[df['Operador'].duplicated(keep=False)].sort_values('Operador'))
+
         # Elimina los duplicados, conservando solo la primera aparición
-        df.drop_duplicates(subset=['Vehiculo'], keep='first', inplace=True)
+        df.drop_duplicates(subset=['Operador'], keep='first', inplace=True)
         print("\nSe eliminaron los duplicados, conservando la primera aparición de cada vehículo.")
         print(f"DataFrame después de eliminar duplicados: {len(df)} filas.")
 
@@ -572,17 +572,17 @@ def pipeline():
   start_time_rfc, end_time_rfc = fecha_z()
   print("==========================================================")
   print("\n 1.- Obteniendo metadatos de conductores (Nombres, IDs)...")
-  url_metadata = "https://api.samsara.com/fleet/vehicles"
-  df_meta1= extraer_vehiculos(url_vehiculos=url_metadata,headers=headers)
+  url_metadata ="https://api.samsara.com/fleet/drivers"
+  df_meta1= extraer_operadores(url_operadores=url_metadata,headers=headers)
   print("==========================================================")
   print("\n 1.1.- Transfomando DF Vehiculos")
-  df_meta1= transformacion_vehiculos( df_meta1)
+  df_meta1= transformacion_operadores( df_meta1)
   print("==========================================================")
   print("\n 2.- Obteniendo las puntuaciones de los conductores")
-  df_meta2 = extraer_score_vehiculo(df_vehiculos=df_meta1, params_score=params_data_ml,headers=headers)
+  df_meta2 = extraer_score_operador(df_drivers=df_meta1, params_score=params_data_ml,headers=headers)
   print("==========================================================")
   print("\n 3.- Uniendo df Operadores con Df puntuaciones")
-  df_meta3 = transformar_unir_vehiculos_puntuaciones(df_scores=df_meta2, df_vehiculos=df_meta1)
+  df_meta3 = transformar_unir_operadores_puntuaciones(df_scores=df_meta2, df_drivers=df_meta1)
   print("\n 4.- Obteniendo eventos de seguridad")
   print("==========================================================")
   url_eventos = "https://api.samsara.com/fleet/safety-events"
@@ -592,14 +592,14 @@ def pipeline():
   df_meta4= transformar_eventos_seguridad(df_final_view2=df_meta4)
   print("==========================================================")
   print("\n 5.- Uniendo puntuaciones con eventos de seguridad")
-  df_meta5= unir_vehiculos_eventos_seguridad(df_final_view1=df_meta3, resumen_operadores=df_meta4)
+  df_meta5= unir_operadores_eventos_seguridad(df_final_view1=df_meta3, resumen_operadores=df_meta4)
   print("==========================================================")
   print("\n 6.- Extraer Tags")
   df_meta6= extraer_tags_samsara(headers=headers)
   print("==========================================================")
   print("\n 6.1.- transformar Tags")
   df_meta6= transformacion_tags(df_tags_final=df_meta6)
-  df_meta7 = unir_tag_metricas_vehiculo(df_maestro=df_meta5, df_tags= df_meta6)
+  df_meta7 = unir_tag_metricas_operadores(df_maestro=df_meta5, df_tags= df_meta6)
   print("==========================================================")
   print("\n A.- Ordenar Puntuaciones")
   a = ordenar_puntuaciones(df_maestro=df_meta7)
@@ -612,5 +612,5 @@ def pipeline():
   print("\n E.- Guardar Reporte")
   guardar_reporte(fecha=end_time_rfc,reporte=d)
   print("\n PIPELINE TERMINADO")
-  
+
   return d
