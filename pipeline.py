@@ -6,9 +6,7 @@ from rango_tiempo import fecha_milisegundos, fecha_z
 
 
 
-# EXTRACCION DE VEHICULOS
-
-# EXTRACCION DE VEHICULOS
+# EXTRACCION DE OPERADORES
 
 def extraer_operadores(headers, url_operadores):
     """
@@ -41,7 +39,7 @@ def extraer_operadores(headers, url_operadores):
                 # Si no hay más páginas, rompemos el bucle
                 break
 
-        # --- PROCESAMIENTO CON PANDAS (Fuera del bucle) ---
+        # --- PROCESAMIENTO CON PANDAS 
         if todos_los_operadores:
             df_drivers = pd.DataFrame(todos_los_operadores)
 
@@ -128,7 +126,7 @@ def extraer_score_operador(headers, df_drivers, params_score):
     # 3. Convertir resultados a DataFrame
     return pd.DataFrame(lista_puntuaciones)
 
-# 3. UNIR LOS DATAFRAMES Y MOSTRAR RESULTADOS
+# UNIR LOS DATAFRAMES Y MOSTRAR RESULTADOS
 
 def transformar_unir_operadores_puntuaciones(df_scores, df_drivers):
 
@@ -147,7 +145,7 @@ def transformar_unir_operadores_puntuaciones(df_scores, df_drivers):
           how='left'
       )
 
-      # Opcional: Conversión de unidades para la vista final
+      # Conversión de unidades para la vista final
       df_final['totalDistanceDrivenKm'] = df_final['totalDistanceDrivenMeters'] / 1000
 
       # Seleccionar y mostrar las columnas clave
@@ -194,7 +192,7 @@ def extraer_eventos_seguridad(start_time_rfc, end_time_rfc, headers, url):
 
   # --- Bucle de Paginación ---
   while has_next_page:
-      # Si hay un cursor, lo agregamos a los parámetros de la consulta
+     
       if cursor:
           params_data_Z["after"] = cursor
 
@@ -235,21 +233,18 @@ def transformar_eventos_seguridad(df_final_view2):
     # 2. "Explotamos" la columna behaviorLabels
     df_explotado = df_temp.explode('behaviorLabels')
 
-    # Desanidamos 'driver'
-    #df_driver = pd.json_normalize(df_explotado['driver']).add_prefix('driver_')
-
     # 3. Desanidamos 'behaviorLabels'
     df_labels = pd.json_normalize(df_explotado['behaviorLabels']).add_prefix('behavior_')
 
-    # 4. Desanidamos 'vehicle'
-    # Usamos record_prefix para que sea vehicle_id, vehicle_name, etc.
-    df_vehicle = pd.json_normalize(df_explotado['driver']).add_prefix('driver_')
+    # 4. Desanidamos 'driver'
+    # Usamos record_prefix para que sea driver_id, driver_name, etc.
+    df_driver = pd.json_normalize(df_explotado['driver']).add_prefix('driver_')
 
     # 5. Unimos todo en un solo DataFrame limpio
     # Concatenamos eliminando las  columnas originales anidadas
     df_final = pd.concat([
         df_explotado.drop(columns=['behaviorLabels', 'driver']).reset_index(drop=True),
-        df_vehicle.reset_index(drop=True),
+        df_driver.reset_index(drop=True),
         df_labels.reset_index(drop=True)
     ], axis=1)
 
@@ -267,6 +262,7 @@ def transformar_eventos_seguridad(df_final_view2):
     resumen_operadores = resumen_operadores.sort_values(by='Total_General', ascending=False)
 
     return resumen_operadores
+
 def unir_operadores_eventos_seguridad(df_final_view1, resumen_operadores):
   # 1. Asegúrate de que el resumen de comportamientos no tenga los ID en el índice
   # (si usaste pivot_table, ejecuta esto primero)
@@ -377,8 +373,6 @@ def extraer_tags_samsara(headers):
     """
     url = "https://api.samsara.com/tags"
 
-
-
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
@@ -416,8 +410,8 @@ def extraer_tags_samsara(headers):
         return pd.DataFrame()
 
 def transformacion_tags(df_tags_final):
-    # Usamos errors='ignore' para que no truene si la columna ya fue borrada o no existe
-    # Asignamos de nuevo a la variable para que el cambio se mantenga
+  
+
     df_tags_final = df_tags_final[["parentTag.id", "parentTag.name"]]
 
     return df_tags_final
@@ -430,7 +424,7 @@ def unir_tag_metricas_operadores(df_maestro, df_tags):
 
     # 1. Limpieza de la tabla de tags para tener una referencia única de ID -> Nombre
     # Nos quedamos solo con las columnas necesarias y quitamos duplicados
-    # Nota: Ajusta 'parentTag.id' y 'parentTag.name' si los nombres varían en tu DF
+
     df_ref_tags = df_tags[['parentTag.id', 'parentTag.name']].drop_duplicates()
 
     # 2. Aseguramos que los IDs sean del mismo tipo (String) para evitar fallos
@@ -462,9 +456,11 @@ def unir_tag_metricas_operadores(df_maestro, df_tags):
 def ordenar_puntuaciones(df_maestro):
   # Usamos ascending=False para que los que tienen MÁS eventos salgan primero
   df_maestro = df_maestro.sort_values(by='safetyScore', ascending=False)
-  return df_maestro
 
   print(f"Éxito: Se generó el reporte con {len(df_maestro)} conductores, ordenados por mayor impacto.")
+ 
+  return df_maestro
+
 
 
 def filtracion_columnas(df_maestro):
@@ -542,7 +538,7 @@ def validar_tipo_datos(df):
     # Correccion de duplicados
 
     if df['Operador'].duplicated().any():
-        print("\n¡ADVERTENCIA! Se encontraron vehículos duplicados en los datos procesados.")
+        print("\n¡ADVERTENCIA! Se encontraron operadores duplicados en los datos procesados.")
         print("Filas duplicadas (incluyendo todas las ocurrencias):")
         # Muestra todas las filas que tienen valores duplicados en la columna 'Vehiculo'
         print(df[df['Operador'].duplicated(keep=False)].sort_values('Operador'))

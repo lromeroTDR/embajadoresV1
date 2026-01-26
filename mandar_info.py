@@ -104,6 +104,8 @@ def procesar_y_notificar(df_datos):
         df_filtrado = df_datos[df_datos['EC'] == ec_objetivo]
         df_filtrado1 = df_filtrado[df_filtrado["Total Km"]>km]
         df_filtrado2 = df_filtrado1[df_filtrado1["Score"]< score]
+        columnas_a_quitar = ['EC', 'Total General', 'Vehiculo']
+        df_filtrado2 = df_filtrado2.drop(columns=columnas_a_quitar)
  
         if not df_filtrado2.empty:
 

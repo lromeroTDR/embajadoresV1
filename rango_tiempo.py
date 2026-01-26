@@ -11,7 +11,7 @@ def fecha_milisegundos():
     inicio_semana_actual = hoy.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=hoy.weekday())
     
     # 3. El Domingo pasado es un segundo antes del inicio de esta semana (o simplemente el día anterior)
-    # Para tu caso: Domingo anterior a las 23:59:59
+ 
     fin_semana_pasada = inicio_semana_actual - timedelta(seconds=1)
     
     # 4. El Lunes de la semana pasada es 7 días antes del inicio de esta semana

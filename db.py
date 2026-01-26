@@ -1,7 +1,6 @@
 import logging
 import pyodbc
 import pandas as pd
-# Asumo que estos nombres están en tu config.py
 from config import conn_str, BD_TABLE_ACTUAL, BD_TABLE_HISTORICO
 
 def connectdb():
@@ -26,7 +25,7 @@ def save_to_database(df: pd.DataFrame, tbl: str, fecha_corte: str) -> int:
         if tbl == BD_TABLE_ACTUAL:
             cur.execute(f"DELETE FROM {tbl}")
 
-        # 1. Definición de INSERT con nombres de columna fijos (ahora ambas tablas son iguales)
+        # 1. Definición de INSERT con nombres de columna fijos 
         sql = f"""
         INSERT INTO {tbl} (
             [Operador], [Proyecto], [EC], [Vehiculo], [Score], 

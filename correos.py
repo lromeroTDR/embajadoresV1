@@ -1,16 +1,14 @@
-import pandas as pd
-from mandar_info import procesar_y_notificar, obtener_reglas, obtener_reglas
+from mandar_info import procesar_y_notificar
 from pipeline import pipeline
 
 
 
 def run():
 
-    print("********----...PROCESO 1: Pipeline Iniciado....-----****************")
+    print("        ----   ...  PROCESO 1: Pipeline Iniciado  ....   ----        ")
     df_maestro = pipeline()
 
-    print("********----...PROCESO 2: Procesar y Notificar....-----****************")
-    embajadores= obtener_reglas()
+    print("        ----   ...  PROCESO 2: Procesar y Notificar  ....   ----        ")
     procesar_y_notificar(df_maestro)
 
 

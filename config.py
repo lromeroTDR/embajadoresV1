@@ -1,5 +1,4 @@
 import os
-import glob
 from dotenv import load_dotenv
 
 # Cargar las variables del archivo .env
