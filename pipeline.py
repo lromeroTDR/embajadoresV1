@@ -467,10 +467,10 @@ def filtracion_columnas(df_maestro):
     # 1. Tu lista de columnas deseadas (se queda igual)
     columnas = [
         'driverName', 'tagName', "nameParent", 'staticVehicle_name',
-        'safetyScore', 'totalDistanceDrivenKm', 'crash', 'drowsy',
-        'genericDistraction', 'followingDistance', 'forwardCollisionWarning',
-        'obstructedCamera', 'harshAccelCount', 'braking', 'harshTurn',
-        'mobileUsage', 'noSeatbelt',"MaxSpeed" , 'Total_General'
+        'safetyScore', 'totalDistanceDrivenKm', 'Crash', 'Drowsy',
+        'GenericDistraction', 'FollowingDistance', 'ForwardCollisionWarning',
+        'ObstructedCamera', 'harshAccelCount', 'Braking', 'HarshTurn',
+        'MobileUsage', 'NoSeatbelt',"MaxSpeed" , 'Total_General'
     ]
 
     # 2. Reindex: busca las columnas. Si no existen, las crea y pone 0 (fill_value=0)
@@ -488,24 +488,23 @@ def cambio_idioma(df):
     'staticVehicle_name': 'Vehiculo',
     'safetyScore': 'Score',
     'totalDistanceDrivenKm': 'Total Km',
-    'crash': 'Choques',
-    'drowsy': 'Somnolencia',
-    'genericDistraction': "Conduccion Distraida",
-    'followingDistance': 'Distancia Seguimiento',
-    'forwardCollisionWarning': 'Colision Frontal',
-    'obstructedCamera': 'Obstruccion Camara',
+    'Crash': 'Choques',
+    'Drowsy': 'Somnolencia',
+    'GenericDistraction': "Conduccion Distraida",
+    'FollowingDistance': 'Distancia Seguimiento',
+    'ForwardCollisionWarning': 'Colision Frontal',
+    'ObstructedCamera': 'Obstruccion Camara',
     'harshAccelCount': 'Aceleracion Brusca',
-    'braking': 'Frenado Brusco',
-    'harshTurn': 'Giro Brusco',
-    'mobileUsage': 'Uso Celular',
-    'noSeatbelt': 'Sin Cinturon',
+    'Braking': 'Frenado Brusco',
+    'HarshTurn': 'Giro Brusco',
+    'MobileUsage': 'Uso Celular',
+    'NoSeatbelt': 'Sin Cinturon',
     "MaxSpeed": "Excesos Velocidad",
     'Total_General': 'Total General',
   }
-# Aplicar el cambio al DataFrame
+    # Aplicar el cambio al DataFrame
     df.rename(columns=columnas_espanol, inplace=True)
-
-  # Verificar los nombres
+    # Verificar los nombres
     print(df.columns)
 
 def validar_tipo_datos(df):
