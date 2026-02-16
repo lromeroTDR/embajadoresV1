@@ -251,7 +251,7 @@ def transformar_eventos_seguridad(df_final_view2):
     # 6. Creamos la tabla dinámica
     # Ahora puedes incluir 'vehicle_name' en el index si quieres ver qué vehículo traían
     resumen_operadores = df_final.pivot_table(
-        index=['driver_id', 'driver_name'],
+        index=['driver_id'], # , 'driver_name'
         columns='behavior_label', # Nota: Samsara suele usar 'label' en behaviorLabels, no 'name'
         aggfunc='size',
         fill_value=0
@@ -279,7 +279,7 @@ def unir_operadores_eventos_seguridad(df_final_view1, resumen_operadores):
 
   # 3. Limpieza: Eliminamos la columna repetida de ID y llenamos los NaNs con 0
   # (los conductores sin infracciones específicas aparecerán con 0 en lugar de NaN)
-  df_maestro = df_maestro.drop(columns=['driver_id', 'driver_name'])
+  df_maestro = df_maestro.drop(columns=['driver_id']) #, 'driver_name'
   df_maestro = df_maestro.fillna(0)
 
   print(df_maestro.head())
@@ -470,7 +470,7 @@ def filtracion_columnas(df_maestro):
         'safetyScore', 'totalDistanceDrivenKm', 'crash', 'drowsy',
         'genericDistraction', 'followingDistance', 'forwardCollisionWarning',
         'obstructedCamera', 'harshAccelCount', 'braking', 'harshTurn',
-        'mobileUsage', 'noSeatbelt',"speeding-intervals" , 'Total_General'
+        'mobileUsage', 'noSeatbelt',"MaxSpeed" , 'Total_General'
     ]
 
     # 2. Reindex: busca las columnas. Si no existen, las crea y pone 0 (fill_value=0)
@@ -499,7 +499,7 @@ def cambio_idioma(df):
     'harshTurn': 'Giro Brusco',
     'mobileUsage': 'Uso Celular',
     'noSeatbelt': 'Sin Cinturon',
-    "speeding-intervals": "Excesos Velocidad",
+    "MaxSpeed": "Excesos Velocidad",
     'Total_General': 'Total General',
   }
 # Aplicar el cambio al DataFrame
@@ -581,7 +581,7 @@ def pipeline():
   df_meta3 = transformar_unir_operadores_puntuaciones(df_scores=df_meta2, df_drivers=df_meta1)
   print("\n 4.- Obteniendo eventos de seguridad")
   print("==========================================================")
-  url_eventos = "https://api.samsara.com/fleet/safety-events"
+  url_eventos = "https://api.samsara.com/safety-events/stream"
   df_meta4 = extraer_eventos_seguridad(end_time_rfc=end_time_rfc, start_time_rfc=start_time_rfc, headers=headers, url=url_eventos)
   print("==========================================================")
   print("\n 4.1.- Transformar datos anidados de la lista de eventos de seguridad")
