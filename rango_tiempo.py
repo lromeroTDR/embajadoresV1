@@ -3,36 +3,33 @@ from datetime import datetime, timedelta, timezone
 
 
 def fecha_milisegundos():
-    # 1. Obtener la fecha y hora actual (hoy)
+    # 1. Obtener la fecha y hora actual
     hoy = datetime.now()
     
-    # 2. Encontrar el inicio de la semana actual (Lunes a las 00:00:00)
-    # hoy.weekday() devuelve 0 para Lunes, 1 para Martes, etc.
+    # 2. Encontrar el inicio de la semana actual (Lunes 00:00:00)
     inicio_semana_actual = hoy.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=hoy.weekday())
     
-    # 3. El Domingo pasado es un segundo antes del inicio de esta semana (o simplemente el día anterior)
- 
-    fin_semana_pasada = inicio_semana_actual - timedelta(seconds=1)
-    
-    # 4. El Lunes de la semana pasada es 7 días antes del inicio de esta semana
+    # 3. Definir rangos de la semana pasada
     inicio_semana_pasada = inicio_semana_actual - timedelta(days=7)
+    fin_semana_pasada = inicio_semana_actual - timedelta(seconds=1)
 
-    # Convertir a milisegundos para la API
+    # 4. Convertir a milisegundos (Unix Timestamp * 1000)
     start_time_ms = int(inicio_semana_pasada.timestamp() * 1000)
     end_time_ms = int(fin_semana_pasada.timestamp() * 1000)
 
+    # Constante de ajuste (6 horas)
     seis_horas_en_ms = 6 * 60 * 60 * 1000
 
+    # CORRECCIÓN: Usar los nombres de variables correctos
     params_data_ml = {
-        "startMs": start_ms - seis_horas_en_ms,
-        "endMs": end_ms - seis_horas_en_ms
+        "startMs": start_time_ms - seis_horas_en_ms,
+        "endMs": end_time_ms - seis_horas_en_ms
     }
     
-    # Imprimir el rango para verificar (Movido antes del return para que se ejecute)
-    print(f"Reporte generado: {inicio_semana_pasada.strftime('%Y-%m-%d %H:%M:%S')} a {fin_semana_pasada.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Reporte generado (ms): {params_data_ml}")
+    print(f"Rango legible: {inicio_semana_pasada} a {fin_semana_pasada}")
     
     return params_data_ml
-
 
 def fecha_z():
     # 1. Obtener la fecha actual en UTC
