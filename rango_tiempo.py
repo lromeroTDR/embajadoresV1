@@ -22,8 +22,8 @@ def fecha_milisegundos():
 
     # CORRECCIÓN: Usar los nombres de variables correctos
     params_data_ml = {
-        "startMs": start_time_ms - seis_horas_en_ms,
-        "endMs": end_time_ms - seis_horas_en_ms
+        "startMs": start_time_ms + seis_horas_en_ms,
+        "endMs": end_time_ms + seis_horas_en_ms
     }
     
     print(f"Reporte generado (ms): {params_data_ml}")
@@ -47,8 +47,8 @@ def fecha_z():
     domingo_pasado = lunes_semana_actual - timedelta(seconds=1)
 
     # --- NUEVA LÓGICA: Restar 6 horas ---
-    lunes_pasado_ajustado = lunes_pasado - timedelta(hours=6)
-    domingo_pasado_ajustado = domingo_pasado - timedelta(hours=6)
+    lunes_pasado_ajustado = lunes_pasado + timedelta(hours=6)
+    domingo_pasado_ajustado = domingo_pasado + timedelta(hours=6)
     # ------------------------------------
 
     # 6. Formatear a RFC 3339 con 'Z'
