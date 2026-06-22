@@ -102,8 +102,8 @@ def procesar_y_notificar(df_datos):
         
         # Filtrar datos (usamos coincidencia exacta para evitar mezclar EC-01 con EC-010)
         df_filtrado = df_datos[df_datos['EC'] == ec_objetivo]
-        df_filtrado1 = df_filtrado[df_filtrado["Total Km"]>km]
-        df_filtrado2 = df_filtrado1[df_filtrado1["Score"]< score]
+        df_filtrado1 = df_filtrado[df_filtrado["Total Km"]>=km]
+        df_filtrado2 = df_filtrado1[df_filtrado1["Score"]<= score]
         columnas_a_quitar = ['EC', 'Total General', 'Vehiculo']
         df_filtrado2 = df_filtrado2.drop(columns=columnas_a_quitar)
  
