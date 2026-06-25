@@ -1,6 +1,15 @@
+import logging
 from mandar_info import procesar_y_notificar
 from pipeline import pipeline
 
+
+
+logging.basicConfig(
+    filename="logg_correos.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
 
 
 def run():

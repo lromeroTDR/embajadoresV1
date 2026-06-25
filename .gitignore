@@ -11,3 +11,7 @@ embajadores/
 #Datos
 **/Datos/
 /Datos
+
+
+.venv/
+logg_correos.log
