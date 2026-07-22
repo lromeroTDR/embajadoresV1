@@ -32,6 +32,8 @@ jobs:
           python correos.py
         env:
           SAMSARA_TOKEN: ${{ secrets.SAMSARA_TOKEN }}
+          TOKEN_MAIL: ${{ secrets.TOKEN_MAIL }}
+          API_REGLAS: ${{ secrets.API_REGLAS}}
 
       - name: Configurar y Subir a DagsHub
         run: |
