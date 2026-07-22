@@ -6,6 +6,9 @@ load_dotenv()
 
 # Obtener el token de la variable de entorno
 token = os.getenv("SAMSARA_TOKEN")
+token_mail = os.getenv("TOKEN_MAIL")
+api_reglas =  os.getenv("API_REGLAS")
+
 
 # Headers actualizados
 headers = {

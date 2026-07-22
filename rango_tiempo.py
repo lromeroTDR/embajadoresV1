@@ -1,62 +1,67 @@
 
+import zoneinfo
 from datetime import datetime, timedelta, timezone
+import logging
 
+logger = logging.getLogger(__name__)
+
+
+def inicio_semana_anterior():
+    try: 
+        # Definir zona horaria Mexico
+        tz_local = zoneinfo.ZoneInfo("America/Mexico_City")
+        # Obtener el ahora reginal
+        ahora_local = datetime.now(tz_local)
+        # Calcular el lunes a las 00:00:00 De esta semana
+        dias_al_lunes = ahora_local.weekday()
+        inicio_lunes_local = (ahora_local -timedelta(days=dias_al_lunes) ).replace( hour=0, minute=0, second=0, microsecond=0)
+        inicio_lunes_anterior = inicio_lunes_local-timedelta(days=7)
+        final_domingo_anterior = inicio_lunes_local - timedelta(seconds=1)
+        return inicio_lunes_anterior, final_domingo_anterior
+    except zoneinfo.ZoneInfoNotFoundError:
+        logger.error("No se encontro la zona horaria Mexico")
+        raise    
 
 def fecha_milisegundos():
-    # 1. Obtener la fecha y hora actual
-    hoy = datetime.now()
+    try:
+        inicio_local, final_local =inicio_semana_anterior()
+        # Convertir a UTC 
+        inicio_lunes_utc = inicio_local.astimezone(timezone.utc)
+        final_domingo_utc = final_local.astimezone(timezone.utc)
+        # Convertir a milisegundos 
+        start_time_ms = int(inicio_lunes_utc.timestamp() * 1000)
+        end_time_ms = int(final_domingo_utc.timestamp() * 1000)
+        logger.info(f"Parametros generados: Start={start_time_ms}, End={end_time_ms}")
+
+        params_data_ml = {
+        "startMs": start_time_ms ,
+        "endMs": end_time_ms 
+        }
+        return params_data_ml
     
-    # 2. Encontrar el inicio de la semana actual (Lunes 00:00:00)
-    inicio_semana_actual = hoy.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=hoy.weekday())
-    
-    # 3. Definir rangos de la semana pasada
-    inicio_semana_pasada = inicio_semana_actual - timedelta(days=7)
-    fin_semana_pasada = inicio_semana_actual - timedelta(seconds=1)
+    except Exception as e:
+        logger.error(f"Error al generar fechas en milisegundos: {e}")
+        raise
 
-    # 4. Convertir a milisegundos (Unix Timestamp * 1000)
-    start_time_ms = int(inicio_semana_pasada.timestamp() * 1000)
-    end_time_ms = int(fin_semana_pasada.timestamp() * 1000)
-
-    # Constante de ajuste (6 horas)
-    seis_horas_en_ms = 6 * 60 * 60 * 1000
-
-    # CORRECCIÓN: Usar los nombres de variables correctos
-    params_data_ml = {
-        "startMs": start_time_ms + seis_horas_en_ms,
-        "endMs": end_time_ms + seis_horas_en_ms
-    }
-    
-    print(f"Reporte generado (ms): {params_data_ml}")
-    print(f"Rango legible: {inicio_semana_pasada} a {fin_semana_pasada}")
-    
-    return params_data_ml
-
-def fecha_z():
-    # 1. Obtener la fecha actual en UTC
-    ahora = datetime.now(timezone.utc)
-    
-    # 2. Ir al inicio del día de hoy (00:00:00)
-    hoy_inicio = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
-    
-    # 3. Encontrar el lunes de la semana actual
-    lunes_semana_actual = hoy_inicio - timedelta(days=ahora.weekday())
-    
-    # 4. Calcular Lunes de la semana pasada (Inicio)
-    # 5. Calcular Domingo de la semana pasada (Fin)
-    lunes_pasado = lunes_semana_actual - timedelta(days=7)
-    domingo_pasado = lunes_semana_actual - timedelta(seconds=1)
-
-    # --- NUEVA LÓGICA: Restar 6 horas ---
-    lunes_pasado_ajustado = lunes_pasado + timedelta(hours=6)
-    domingo_pasado_ajustado = domingo_pasado + timedelta(hours=6)
-    # ------------------------------------
-
-    # 6. Formatear a RFC 3339 con 'Z'
-    start_time_rfc = lunes_pasado_ajustado.strftime('%Y-%m-%dT%H:%M:%SZ')
-    end_time_rfc = domingo_pasado_ajustado.strftime('%Y-%m-%dT%H:%M:%SZ')
-
-    print(f"Rango capturado (Semana Pasada con -6h):")
-    print(f"Inicio: {start_time_rfc}")
-    print(f"Fin:    {end_time_rfc}")
-
-    return start_time_rfc, end_time_rfc
+def fecha_z(utc = True):
+    try:
+        inicio_local, final_local =inicio_semana_anterior()
+        if utc:
+            inicio = inicio_local.astimezone(timezone.utc)
+            final = final_local.astimezone(timezone.utc)
+        else:
+            inicio = inicio_local
+            final = final_local
+        start_time = inicio.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] 
+        end_time = final.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] 
+        if utc:
+            start_time += "Z"
+            end_time += "Z"
+        else:
+            start_time += inicio.strftime("%z")
+            end_time += final.strftime("%z")
+        logger.info("Parametros de fecha generados correctamente")
+        return start_time, end_time
+    except Exception as e:
+        logger.error(f"Error al generar fechas en formato Z: {e}")
+        raise
