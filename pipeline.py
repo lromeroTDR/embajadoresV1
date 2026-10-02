@@ -121,7 +121,7 @@ def transformacion_tags(data):
     df_tags_final = df_tags[[col for col in columnas_a_filtrar if col in df_tags.columns]].copy()
 
     # 6. Aplicamos tu filtro por Equipos Colaborativos
-    filtro_ec = ["EC-01", "EC-02", "EC-03", "EC-05", "EC-08", "EC-10"]
+    filtro_ec = ["EC-01", "EC-02", "EC-03","EC-04", "EC-05","EC-06","EC-08", "EC-10"]
     if "parentTagName" in df_tags_final.columns:
         df_tags_final = df_tags_final[df_tags_final["parentTagName"].isin(filtro_ec)]
 
